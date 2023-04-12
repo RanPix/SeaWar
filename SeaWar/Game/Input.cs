@@ -6,7 +6,7 @@ public class Input
 {
     public static ConsoleKey? latestInput;
 
-    public void GetInput()
+    public void UpdateInput()
     {
         if (latestInput != null)
             latestInput = null;
