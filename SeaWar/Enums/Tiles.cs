@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace SeaWar;
+﻿namespace SeaWar.Enums;
 
 public enum Tiles
 {

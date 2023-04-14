@@ -1,4 +1,4 @@
-﻿using System;
+﻿using SeaWar.Core;
 
 namespace SeaWar;
 
@@ -8,6 +8,6 @@ class Program
     {
         Game game = new Game();
 
-        game.Launch();
+        game.Run();
     }
 }
