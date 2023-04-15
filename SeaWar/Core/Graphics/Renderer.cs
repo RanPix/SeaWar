@@ -33,7 +33,7 @@ public class Renderer
 
         Console.CursorVisible = false;
     }
-    
+
     public void Draw(string[,] graphicsBuffer)
     {
         int xLength = graphicsBuffer.GetLength(0);
@@ -55,19 +55,4 @@ public class Renderer
 
         Console.Write(screenBuffer);
     }
-
-    public void Clear()
-        => Console.Clear();
-
-    private string GetTileGraphic(Tiles tile)
-        => tile switch
-        {
-            Tiles.Water => Colors.GetColor(50, 50, (byte)Rand.Next(125, 255)) + '~',
-            Tiles.Ship => Colors.GetColor(255, 255, 255) + '#',
-            Tiles.Occupied => Colors.GetColor(40, 40, 40) + '0',//Color(40, 40, (byte)Rand.Next(150, 225)) + '~',
-            Tiles.DestroyedShip => Colors.GetColor(155, 30, 30) + 'x',
-            Tiles.MissedShot => Colors.GetColor(100, 100, 100) + 'o',
-
-            _ => "n"
-        };
 }
