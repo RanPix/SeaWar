@@ -27,7 +27,4 @@ public class Input
 
     public static bool GetShootInput()
         => latestInput == ConsoleKey.T;
-
-    public static bool GetNextPlayerReadyInput()
-        => latestInput == ConsoleKey.R;
 }

@@ -1,15 +1,15 @@
-﻿using SeaWar.Tools;
+﻿using SeaWar.Core.Graphics;
 
 namespace SeaWar.Core;
 
-public class Game : Player
+public class Game : Cursor
 {
     private Renderer render = new Renderer();
-    private Player player = new Player();
+    private GraphicsBuffer graphicsBuffer = new GraphicsBuffer();
+    private Cursor cursor = new Cursor();
     private Map map = new Map();
     private Turn turn = new Turn();
     
-
     public void Run()
     {
         Start();
@@ -22,7 +22,7 @@ public class Game : Player
     {
         render.Start();
 
-        map.PlaceShip();
+        map.PlaceShips();
     }
 
     private void Update()
@@ -32,15 +32,11 @@ public class Game : Player
         if (turn.beginNextTurn)
             turn.NextTurn();
 
-        player.MoveCursor();
-        turn.beginNextTurn = player.Shoot(turn.playerTurn, ref map.playerMap[turn.GetEnemyPlayer()]);
+        cursor.MoveCursor();
+        turn.beginNextTurn = map.Shoot(turn.enemyPlayer, cursor.cursorX, cursor.cursorY);
 
-        map.RebuildTileMap(turn.playerTurn);
-        render.Draw(0, map.tileMap, (player.cursorX, player.cursorY));
+        map.BuildGraphicsBuffer(graphicsBuffer, cursor.cursorX, cursor.cursorY, turn.playerTurn, turn.enemyPlayer);
 
-        map.RebuildEnemyTileMap(turn.GetEnemyPlayer());
-        render.Draw(12, map.tileMap, (player.cursorX, player.cursorY));
+        render.Draw(graphicsBuffer.buffer);
     }
-
-    
 }
