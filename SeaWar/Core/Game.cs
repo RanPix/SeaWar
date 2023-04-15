@@ -15,7 +15,11 @@ public class Game : Cursor
         Start();
 
         while (true)
+        {
+            Input.UpdateInput();
             Update();
+            render.Draw(graphicsBuffer.buffer);
+        }
     }
 
     private void Start()
@@ -27,8 +31,6 @@ public class Game : Cursor
 
     private void Update()
     {
-        Input.UpdateInput();
-
         if (turn.beginNextTurn)
             turn.NextTurn();
 
@@ -36,7 +38,5 @@ public class Game : Cursor
         turn.beginNextTurn = map.Shoot(turn.enemyPlayer, cursor.cursorX, cursor.cursorY);
 
         map.BuildGraphicsBuffer(graphicsBuffer, cursor.cursorX, cursor.cursorY, turn.playerTurn, turn.enemyPlayer);
-
-        render.Draw(graphicsBuffer.buffer);
     }
 }
