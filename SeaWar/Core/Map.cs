@@ -10,7 +10,7 @@ public class Map
 
     public Tile[,] GetTileMap(bool shipsHidden)
     {
-        Tile[,] newMap = GetMap();
+        Tile[,] newMap = CopyMap();
 
         int lengthX = newMap.GetLength(0);
         int lengthY = newMap.GetLength(1);
@@ -26,7 +26,7 @@ public class Map
         return newMap;
     }
 
-    private Tile[,] GetMap()  // ЧОМУ ЦЕ ЛАЙНО ЦЕ РЕФЕРЕНС ТАЙП НА*************
+    private Tile[,] CopyMap()  // ЧОМУ ЦЕ ЛАЙНО ЦЕ РЕФЕРЕНС ТАЙП НА*************
     {
         Tile[,] newMap = new Tile[10, 10];
 

@@ -11,7 +11,7 @@ public class Game
     private Cursor cursor = new Cursor();
     private Turn turn = new Turn();
 
-    private Player[] players = new Player[] { new Player(false), new Player(false) };
+    private Player[] players = new Player[] { new Player(false), new Player(true) };
 
     private int enemyPlayer = 1;
 
@@ -44,7 +44,7 @@ public class Game
         }
 
         cursor.MoveCursor();
-        turn.nextTurn = players[enemyPlayer].Shoot(cursor.cursorX, cursor.cursorY); // я не знаю як то інакше зробити :(
+        turn.nextTurn = players[turn.playerTurn].Shoot(cursor.cursorX, cursor.cursorY, players[enemyPlayer].map); // я не знаю як то інакше зробити :(
 
         graphicsBuffer.Clear();
         ui.WriteBuffer(graphicsBuffer, GameMode.PvP);
