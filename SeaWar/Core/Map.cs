@@ -6,107 +6,60 @@ namespace SeaWar.Core;
 
 public class Map
 {
-    public Tiles[,] tileMap { get; private set; } = new Tiles[10, 10];
-    public Tiles[][,] playerMap { get; private set; } = new Tiles[][,] { new Tiles[10, 10], new Tiles[10, 10] };
+    public Tile[,] map { get; private set; } = new Tile[10, 10];
 
-    public void RebuildTileMap(int playerTurn)
+    public Tile[,] GetTileMap(bool shipsHidden)
     {
-        int lengthX = playerMap[playerTurn].GetLength(0);
-        int lengthY = playerMap[playerTurn].GetLength(1);
+        Tile[,] newMap = GetMap();
 
-        for (int y = 0; y < lengthX; y++)
+        int lengthX = newMap.GetLength(0);
+        int lengthY = newMap.GetLength(1);
+
+        for (int y = 0; y < lengthY; y++)
         {
-            for (int x = 0; x < lengthY; x++)
+            for (int x = 0; x < lengthX; x++)
             {
-                tileMap[x, y] = playerMap[playerTurn][x, y];
+                newMap[x, y] = GetTile(map[x, y], shipsHidden);
             }
         }
+
+        return newMap;
     }
 
-    public void RebuildEnemyTileMap(int enemyPlayer)
+    private Tile[,] GetMap()  // ЧОМУ ЦЕ ЛАЙНО ЦЕ РЕФЕРЕНС ТАЙП НА*************
     {
-        int lengthX = playerMap[enemyPlayer].GetLength(0);
-        int lengthY = playerMap[enemyPlayer].GetLength(1);
+        Tile[,] newMap = new Tile[10, 10];
 
-        Tiles[,] enemyTiles = playerMap[enemyPlayer];
+        int lengthX = map.GetLength(0);
+        int lengthY = map.GetLength(1);
 
-        for (int y = 0; y < lengthX; y++)
+        for (int y = 0; y < lengthY; y++)
         {
-            for (int x = 0; x < lengthY; x++)
+            for (int x = 0; x < lengthX; x++)
             {
-                tileMap[x, y] = enemyTiles[x, y] == Tiles.Ship ? Tiles.Water : enemyTiles[x, y];
+                newMap[x, y] = map[x, y];
             }
         }
+
+        return newMap;
     }
 
-    public void BuildGraphicsBuffer(GraphicsBuffer buffer, int cursorX, int cursorY, int currentPlayer, int enemyPlayer)
+    private Tile GetTile(Tile tile, bool shipsHidden)
     {
-        buffer.Write(0, 0, Colors.GetColor(0, 255, 0) + "Your map");
-        buffer.Write(0, 1, Colors.GetColor(255, 255, 255) + "  0 1 2 3 4 5 6 7 8 9");
+        if (shipsHidden)
+            return tile == Tile.Ship ? Tile.Water : tile;
 
-        for (int i = 0; i < 10; i++)
-            buffer.Write(0, i + 2, Colors.GetColor(255, 255, 255) + (char)('A' + i));
-
-        RebuildTileMap(currentPlayer);
-        buffer.WriteTileMap(1, 2, tileMap);
-
-        buffer.WriteCursor(1, 2, cursorX, cursorY, tileMap);
-
-
-        buffer.Write(0, 15, Colors.GetColor(255, 0, 0) + "Enemy map");
-        buffer.Write(0, 16, Colors.GetColor(255, 255, 255) + "  0 1 2 3 4 5 6 7 8 9");
-
-        for (int i = 0; i < 10; i++)
-            buffer.Write(0, i + 17, Colors.GetColor(255, 255, 255) + (char)('A' + i));
-
-        RebuildEnemyTileMap(enemyPlayer);
-        buffer.WriteTileMap(1, 17, tileMap);
-
-        buffer.WriteCursor(1, 17, cursorX, cursorY, tileMap);
+        return tile;
     }
 
-    public void PlaceShips()
+    public void GenerateShips()
     {
-        Random r = new Random();
-
         for (int i = 0; i < 20; i++)
         {
-            r = new Random();
+            int shipX = Rand.Next(0, 10);
+            int shipY = Rand.Next(0, 10);
 
-            int px = r.Next(0, 10);
-            int py = r.Next(0, 10);
-
-            playerMap[0][px, py] = Tiles.Ship;
-
-            r = new Random();
-
-            px = r.Next(0, 10);
-            py = r.Next(0, 10);
-
-            playerMap[1][px, py] = Tiles.Ship;
+            map[shipX, shipY] = Tile.Ship;
         }
-    }
-
-    public bool Shoot(int enemyPlayer, int cursorX, int cursorY)
-    {
-        if (!Input.GetShootInput())
-            return false;
-
-        Tiles[,] enemyMap = playerMap[enemyPlayer];
-
-        Tiles enemyTile = enemyMap[cursorX, cursorY];
-        Tiles newEnemyTile;
-
-        if (enemyTile is Tiles.DestroyedShip or Tiles.MissedShot)
-            return false;
-
-        else if (enemyTile is Tiles.Ship)
-            newEnemyTile = Tiles.DestroyedShip;
-        else
-            newEnemyTile = Tiles.MissedShot;
-
-        enemyMap[cursorX, cursorY] = newEnemyTile;
-
-        return true;
     }
 }

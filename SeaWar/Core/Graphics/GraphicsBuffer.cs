@@ -12,7 +12,7 @@ public class GraphicsBuffer
         buffer[writeX, writeY] = s;
     }
 
-    public void WriteTileMap(int writeX, int writeY, Tiles[,] tileMap)
+    private void WriteTileMap(int writeX, int writeY, Tile[,] tileMap)
     {
         int xLength = tileMap.GetLength(0) + writeX;
         int yLength = tileMap.GetLength(1) + writeY;
@@ -26,19 +26,31 @@ public class GraphicsBuffer
         }
     }
 
-    public void WriteCursor(int offsetX, int offsetY, int writeX, int writeY, Tiles[,] tileMap)
+    private void WriteCursor(int offsetX, int offsetY, int writeX, int writeY, Tile[,] tileMap)
     {
         buffer[writeX + offsetX, writeY + offsetY] = ' ' + Colors.GetBGColor(150, 150, 150) + GetTileGraphic(tileMap[writeX, writeY]) + Colors.GetBGColor(0, 0, 0);
     }
 
-    private string GetTileGraphic(Tiles tile)
+    public void WriteTileMaps(int cursorX, int cursorY, params Tile[][,] maps) // я не знав куди то запхнути :((
+    {
+        WriteTileMap(1, 2, maps[0]);
+        WriteCursor(1, 2, cursorX, cursorY, maps[0]);
+
+        WriteTileMap(1, 17, maps[1]);
+        WriteCursor(1, 17, cursorX, cursorY, maps[1]);
+    }
+
+    public void Clear()
+        => buffer = new string[20, 30];
+
+    private string GetTileGraphic(Tile tile)
         => tile switch
         {
-            Tiles.Water => Colors.GetColor(50, 50, (byte)Rand.Next(125, 255)) + '~',
-            Tiles.Ship => Colors.GetColor(255, 255, 255) + '#',
-            Tiles.Occupied => Colors.GetColor(40, 40, 40) + '0',//Color(40, 40, (byte)Rand.Next(150, 225)) + '~',
-            Tiles.DestroyedShip => Colors.GetColor(155, 30, 30) + 'x',
-            Tiles.MissedShot => Colors.GetColor(100, 100, 100) + 'o',
+            Tile.Water => Colors.GetColor(50, 50, (byte)Rand.Next(125, 255)) + '~',
+            Tile.Ship => "\x1b[38;2;255;255;255m#",
+            Tile.Occupied => "\x1b[38;2;40;40;40m0",
+            Tile.DestroyedShip => "\x1b[38;2;155;30;30mx",
+            Tile.MissedShot => "\x1b[38;2;100;100;100mo",
 
             _ => "n"
         };

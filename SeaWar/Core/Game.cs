@@ -1,15 +1,20 @@
 ﻿using SeaWar.Core.Graphics;
+using SeaWar.Enums;
 
 namespace SeaWar.Core;
 
-public class Game : Cursor
+public class Game
 {
     private Renderer render = new Renderer();
     private GraphicsBuffer graphicsBuffer = new GraphicsBuffer();
+    private UI ui = new UI();
     private Cursor cursor = new Cursor();
-    private Map map = new Map();
     private Turn turn = new Turn();
-    
+
+    private Player[] players = new Player[] { new Player(), new Player() };
+
+    private int enemyPlayer = 1;
+
     public void Run()
     {
         Start();
@@ -26,17 +31,23 @@ public class Game : Cursor
     {
         render.Start();
 
-        map.PlaceShips();
+        foreach (Player player in players)
+            player.Start();
     }
 
     private void Update()
     {
-        if (turn.beginNextTurn)
+        if (turn.nextTurn)
+        {
+            enemyPlayer = turn.playerTurn;
             turn.NextTurn();
+        }
 
         cursor.MoveCursor();
-        turn.beginNextTurn = map.Shoot(turn.enemyPlayer, cursor.cursorX, cursor.cursorY);
+        turn.nextTurn = players[enemyPlayer].Shoot(cursor.cursorX, cursor.cursorY); // я не знаю як то інакше зробити :(
 
-        map.BuildGraphicsBuffer(graphicsBuffer, cursor.cursorX, cursor.cursorY, turn.playerTurn, turn.enemyPlayer);
+        graphicsBuffer.Clear();
+        ui.WriteBuffer(graphicsBuffer, GameMode.PvP);
+        graphicsBuffer.WriteTileMaps(cursor.cursorX, cursor.cursorY, players[turn.playerTurn].GetTileMap(false), players[enemyPlayer].GetTileMap(true));
     }
 }

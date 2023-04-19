@@ -1,6 +1,6 @@
 ﻿namespace SeaWar.Enums;
 
-public enum Tiles
+public enum Tile
 {
     Water,
     Ship,

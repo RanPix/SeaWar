@@ -4,19 +4,15 @@ namespace SeaWar.Core;
 
 public class Turn
 {
-    public int playerTurn;
-    public int enemyPlayer;
+    public int playerTurn = 0;
 
-    public bool beginNextTurn;
+    public bool nextTurn;
 
     public void NextTurn()
     {
         playerTurn++;
         playerTurn.Loop(0, 1);
 
-        enemyPlayer = playerTurn + 1;
-        enemyPlayer.Loop(0, 1);
-
-        beginNextTurn = false;
+        nextTurn = false;
     }
 }
