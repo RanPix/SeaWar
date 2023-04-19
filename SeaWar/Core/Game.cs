@@ -11,7 +11,7 @@ public class Game
     private Cursor cursor = new Cursor();
     private Turn turn = new Turn();
 
-    private Player[] players = new Player[] { new Player(), new Player() };
+    private Player[] players = new Player[] { new Player(false), new Player(false) };
 
     private int enemyPlayer = 1;
 
