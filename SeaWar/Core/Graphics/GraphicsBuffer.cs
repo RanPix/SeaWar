@@ -33,11 +33,10 @@ public class GraphicsBuffer
 
     public void WriteTileMaps(int cursorX, int cursorY, params Tile[][,] maps) // я не знав куди то запхнути :((
     {
-        WriteTileMap(1, 2, maps[0]);
-        WriteCursor(1, 2, cursorX, cursorY, maps[0]);
+        WriteTileMap(1, 3, maps[0]);
 
-        WriteTileMap(1, 17, maps[1]);
-        WriteCursor(1, 17, cursorX, cursorY, maps[1]);
+        WriteTileMap(1, 18, maps[1]);
+        WriteCursor(1, 18, cursorX, cursorY, maps[1]);
     }
 
     public void Clear()

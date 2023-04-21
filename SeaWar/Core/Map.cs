@@ -10,7 +10,7 @@ public class Map
 
     public Tile[,] GetTileMap(bool shipsHidden)
     {
-        Tile[,] newMap = CopyMap();
+        Tile[,] newMap = new Tile[10, 10];
 
         int lengthX = newMap.GetLength(0);
         int lengthY = newMap.GetLength(1);
@@ -20,24 +20,6 @@ public class Map
             for (int x = 0; x < lengthX; x++)
             {
                 newMap[x, y] = GetTile(map[x, y], shipsHidden);
-            }
-        }
-
-        return newMap;
-    }
-
-    private Tile[,] CopyMap()  // ЧОМУ ЦЕ ЛАЙНО ЦЕ РЕФЕРЕНС ТАЙП НА*************
-    {
-        Tile[,] newMap = new Tile[10, 10];
-
-        int lengthX = map.GetLength(0);
-        int lengthY = map.GetLength(1);
-
-        for (int y = 0; y < lengthY; y++)
-        {
-            for (int x = 0; x < lengthX; x++)
-            {
-                newMap[x, y] = map[x, y];
             }
         }
 
@@ -54,12 +36,19 @@ public class Map
 
     public void GenerateShips()
     {
-        for (int i = 0; i < 20; i++)
+        int shipsSpawned = 0;
+
+        while (shipsSpawned < Game.maxShips)
         {
             int shipX = Rand.Next(0, 10);
             int shipY = Rand.Next(0, 10);
 
+            if (map[shipX, shipY] == Tile.Ship)
+                continue;
+
             map[shipX, shipY] = Tile.Ship;
+
+            shipsSpawned++;
         }
     }
 }
