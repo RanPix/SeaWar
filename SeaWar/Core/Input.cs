@@ -27,4 +27,7 @@ public class Input
 
     public static bool GetShootInput()
         => latestInput == ConsoleKey.T;
+
+    public static bool GetNextTurnInput()
+        => Console.ReadKey(true).Key == ConsoleKey.N;
 }

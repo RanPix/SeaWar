@@ -9,4 +9,17 @@ public static class IntExtention
         n = n > max ? min : 
             n < min ? max : n;
     }
+
+    public static bool ValidateInt(this string str)
+    {
+        try
+        {
+            int.Parse(str);
+            return false;
+        }
+        catch
+        {
+            return true;
+        }
+    }
 }

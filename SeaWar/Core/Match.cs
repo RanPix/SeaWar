@@ -3,30 +3,34 @@ using SeaWar.Enums;
 
 namespace SeaWar.Core;
 
-public class Game
+public class Match
 {
-    private Renderer render = new Renderer();
     private GraphicsBuffer graphicsBuffer = new GraphicsBuffer();
+    private Renderer renderer = new Renderer();
     private UI ui = new UI();
     private Cursor cursor = new Cursor();
     private Turn turn = new Turn();
 
     private Player[] players = new Player[] { new Player(false), new Player(false) };
 
-    public const int maxShips = 20;
+    private GameMode gameMode;
+
+    public const int maxShips = 15;
     private int enemyPlayer = 1;
 
+    public MatchResult matchResult { get; private set; }
     private bool endGame;
-    public (bool player1Won, bool player2Won) playerWon;
     private (int player1Wins, int player2Wins) playerWins;
 
-    public Game(bool player1AI, bool player2AI, int player1Wins, int player2Wins)
+    public Match(bool player1AI, bool player2AI, int player1Wins, int player2Wins, GameMode gameMode)
     {
         players[0] = new Player(player1AI);
         players[1] = new Player(player2AI);
 
         playerWins.player1Wins = player1Wins;
         playerWins.player2Wins = player2Wins;
+
+        this.gameMode = gameMode;
     }
     
     public void Run()
@@ -37,13 +41,13 @@ public class Game
         {
             Input.UpdateInput();
             Update();
-            render.Draw(graphicsBuffer.buffer);
+            renderer.Draw(graphicsBuffer.buffer);
         }
     }
 
     private void Start()
     {
-        render.Start();
+        renderer.Start();
 
         foreach (Player player in players)
             player.Start();
@@ -53,25 +57,31 @@ public class Game
     {
         if (turn.nextTurn)
         {
+            turn.WaitForNextTurn(gameMode);
+
             enemyPlayer = turn.currentPlayer;
             turn.NextTurn();
-            Thread.Sleep(500);
         }
 
-        CheckWinner();
         cursor.MoveCursor();
         turn.nextTurn = players[turn.currentPlayer].Shoot(cursor.cursorX, cursor.cursorY, players[enemyPlayer].map); // я не знаю як то інакше зробити :(
 
+        CheckWinner();
         graphicsBuffer.Clear();
         ui.WriteBuffer(graphicsBuffer, turn.currentPlayer, enemyPlayer, playerWins.player1Wins, playerWins.player2Wins);
-        graphicsBuffer.WriteTileMaps(cursor.cursorX, cursor.cursorY, players[turn.currentPlayer].GetTileMap(false), players[enemyPlayer].GetTileMap(true));
+        graphicsBuffer.WriteTileMaps(cursor.cursorX, cursor.cursorY, players[turn.currentPlayer].GetTileMap(false), players[enemyPlayer].GetTileMap(false));
     }
+
+
 
     private void CheckWinner()
     {
-        playerWon.player2Won = players[0].CheckLost();
-        playerWon.player1Won = players[1].CheckLost();
+        if (players[0].CheckWon())
+            matchResult = MatchResult.Player1Won;
 
-        endGame = playerWon.player1Won || playerWon.player2Won;
+        if (players[1].CheckWon())
+            matchResult = MatchResult.Player2Won;
+
+        endGame = matchResult != MatchResult.Null;
     }
 }

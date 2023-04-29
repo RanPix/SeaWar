@@ -38,7 +38,7 @@ public class Map
     {
         int shipsSpawned = 0;
 
-        while (shipsSpawned < Game.maxShips)
+        while (shipsSpawned < Match.maxShips)
         {
             int shipX = Rand.Next(0, 10);
             int shipY = Rand.Next(0, 10);
