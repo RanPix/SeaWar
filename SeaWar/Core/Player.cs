@@ -14,6 +14,8 @@ public class Player
 
     private int shipsDestroyed = 0;
 
+    private string name;
+
     public Player(bool isAI)
     {
         this.isAI = isAI;

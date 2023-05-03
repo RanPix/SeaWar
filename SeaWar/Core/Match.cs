@@ -15,7 +15,7 @@ public class Match
 
     private GameMode gameMode;
 
-    public const int maxShips = 15;
+    public const int maxShips = 1;
     private int enemyPlayer = 1;
 
     public MatchResult matchResult { get; private set; }

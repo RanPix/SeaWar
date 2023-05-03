@@ -5,42 +5,59 @@ namespace SeaWar.Core;
 
 public class Lobby
 {
-    private int player1Wins = 0;
+    private Profiles playersProfiles;
+
+    private int player1Wins = 0;    
     private int player2Wins = 0;
+
+    private (bool player1AI, bool player2AI) playersAreAI;
+    private GameMode gameMode;
 
     public void Start()
     {
-        (bool player1AI, bool player2AI) players = GetPlayers();
-        GameMode gameMode = GetGameMode(players);
+        playersProfiles = SaveLoad.LoadProfiles();
+
+        //playersAreAI = GetPlayers();
+        GameConfig gameConfig = SaveLoad.LoadConfig();
+        ParseGameConfig(gameConfig);
+        //GameMode gameMode = GetGameMode(playersAreAI);
 
         while (!(player1Wins >= 3 || player2Wins >= 3))
         {
-            Match match = new Match(players.player1AI, players.player2AI, player1Wins, player2Wins, gameMode);
+            Match match = new Match(playersAreAI.player1AI, playersAreAI.player2AI, player1Wins, player2Wins, gameMode);
             match.Run();
 
-            CheckWinner(match.matchResult);
+            CheckWinner(match.matchResult, gameConfig);
         }
     }
 
-    private void CheckWinner(MatchResult matchResult)
+    private void CheckWinner(MatchResult matchResult, GameConfig gameConfig)
     {
         switch (matchResult)
         {
             case MatchResult.Player1Won:
                 player1Wins++;
-                return;
+
+                playersProfiles.GetProfile(gameConfig.profile1).roundsWon++;
+                playersProfiles.GetProfile(gameConfig.profile2).roundsLost++;
+                break;
 
             case MatchResult.Player2Won:
                 player2Wins++;
-                return;
+
+                playersProfiles.GetProfile(gameConfig.profile2).roundsWon++;
+                playersProfiles.GetProfile(gameConfig.profile1).roundsLost++;
+                break;
 
             case MatchResult.Draw:
-                return;
+                break;
 
             default:
                 //how
-                return;
+                break;
         }
+
+        SaveLoad.SaveProfiles(playersProfiles);
     }
 
     private GameMode GetGameMode((bool player1AI, bool player2AI) players)
@@ -106,5 +123,28 @@ public class Lobby
             return -404;
 
         return Math.Clamp(int.Parse(input), 0, 1);
+    }
+
+    private void ParseGameConfig(GameConfig config)
+    {
+        switch ((GameMode)config.gameMode)
+        {
+            case GameMode.PvP:
+                playersAreAI.player1AI = false;
+                playersAreAI.player2AI = false;
+                break;
+
+            case GameMode.PvE:
+                playersAreAI.player1AI = false;
+                playersAreAI.player2AI = true;
+                break;
+
+            case GameMode.EvE:
+                playersAreAI.player1AI = true;
+                playersAreAI.player2AI = true;
+                break;
+        }
+
+        gameMode = (GameMode)config.gameMode;
     }
 }

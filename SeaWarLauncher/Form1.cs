@@ -5,7 +5,7 @@ namespace SeaWarLauncher;
 
 public partial class Form1 : Form
 {
-    private string gameFileDirectory = Directory.GetCurrentDirectory() + @"\SeaWar\SeaWar.exe";
+    private string gameFileDirectory;
 
     Profile currentProfile = new Profile();
     Profiles allProfiles;
@@ -16,6 +16,8 @@ public partial class Form1 : Form
     public Form1()
     {
         InitializeComponent();
+
+        gameFileDirectory = Directory.GetCurrentDirectory() + @"\SeaWar\SeaWar.exe";
 
         allProfiles = SaveLoad.LoadProfiles();
 

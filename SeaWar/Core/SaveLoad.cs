@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
-using SeaWarLauncher.Enums;
+using SeaWar.Enums;
 
-namespace SeaWarLauncher;
+namespace SeaWar.Core;
 
 public static class SaveLoad
 {
@@ -24,33 +24,35 @@ public static class SaveLoad
         {
             Profiles profiles = JsonConvert.DeserializeObject<Profiles>(File.ReadAllText(profilesDataDirectory));
 
-            if (profiles == null) 
+            if (profiles == null)
                 return new Profiles(new List<Profile>()
                 {
                     new Profile() { name = "BOT Joseph" },
                     new Profile() { name = "BOT Ceasar" }
                 });
-            
+
             return profiles;
         }
         catch
-        {                   
-            return new Profiles(new List<Profile>() 
-            { 
+        {
+            return new Profiles(new List<Profile>()
+            {
                 new Profile() { name = "BOT Joseph" },
                 new Profile() { name = "BOT Ceasar" }
             });
         }
     }
 
-    public static void SaveConfig(string profile1, string profile2, int gameMode, int botDifficulty)
+    public static GameConfig LoadConfig()
     {
-        GameConfig gameConfig = new GameConfig(profile1, profile2, gameMode, botDifficulty);
-        StreamWriter currentJsonFileStream = new StreamWriter(gameConfigurationDataDirectory);
-
-        string serializedData = JsonConvert.SerializeObject(gameConfig, Formatting.Indented);
-        currentJsonFileStream.WriteLine(serializedData);
-
-        currentJsonFileStream.Close();
+            return JsonConvert.DeserializeObject<GameConfig>(File.ReadAllText(gameConfigurationDataDirectory));
+        try
+        {
+        }
+        catch
+        {
+            throw new Exception("You broke a fucking config file");
+            //return new GameConfig("Player1", "Player2", 2, 1);
+        }
     }
 }

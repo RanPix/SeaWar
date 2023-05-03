@@ -1,4 +1,4 @@
-﻿namespace SeaWarLauncher;
+﻿namespace SeaWar.Core;
 
 [Serializable]
 public class GameConfig

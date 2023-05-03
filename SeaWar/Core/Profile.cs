@@ -1,4 +1,4 @@
-﻿namespace SeaWarLauncher;
+﻿namespace SeaWar.Core;
 
 public class Profile
 {
